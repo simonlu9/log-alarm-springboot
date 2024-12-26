@@ -28,4 +28,11 @@ log-alarm:
 #        spring:
 #          json:
 #            trusted:
+spring:
+  application:
+    name: test
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 #              packages: "com.ljw.logalarm.dto"

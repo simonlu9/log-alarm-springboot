@@ -1,11 +1,11 @@
 package com.ljw.logalarm.core.wrapper;
 
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import org.springframework.http.MediaType;
 
-import javax.servlet.ReadListener;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
 
 /**
@@ -21,9 +21,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
 
     public RequestWrapper(HttpServletRequest request) {
         super(request);
-        if(MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())){
-            renewBody(request);
-        }
+        renewBody(request);
     }
 
     /**

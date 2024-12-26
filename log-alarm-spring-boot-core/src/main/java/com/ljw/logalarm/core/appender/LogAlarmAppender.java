@@ -4,21 +4,23 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.AppenderBase;
+import com.alibaba.fastjson2.JSONObject;
 import com.ljw.logalarm.core.context.LogAlarmContext;
 import com.ljw.logalarm.core.dto.AlarmMessageDTO;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.stacktrace.ShortenedThrowableConverter;
 import org.slf4j.MDC;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.ljw.logalarm.core.filter.LogParamsFilter.REQUEST_BODY;
-import static com.ljw.logalarm.core.filter.LogParamsFilter.REQUEST_PARAMS;
+import static com.ljw.logalarm.core.filter.LogParamsFilter.*;
 import static com.ljw.logalarm.core.filter.TraceIdFilter.TRACE_ID;
 
 /**
@@ -64,12 +66,16 @@ public class LogAlarmAppender extends AppenderBase<LoggingEvent> {
             }
             trackMessage = stackTrace;
         }
-        String template = "TraceId: %s\n请求参数: %s\n请求BODY: %s\n异常来源: %s\n日志内容: %s\n异常时间: %s\n异常描述: %s\n详细信息:\n%s";
+        String template = "链路追踪: %s\n应用名: %s\n用户编号: %s\n请求信息: %s\n请求参数: %s\n请求body: %s\n异常来源: %s\n日志内容: %s\n异常时间: %s\n异常描述: %s\n详细信息:\n%s";
         LocalDateTime date = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDate = date.format(formatter);
+        String requestInfo = !StringUtils.isEmpty(MDC.get(REQUEST_METHOD))?MDC.get(REQUEST_METHOD)+" "+MDC.get(REQUEST_URL):"";
         return String.format(template,
                 MDC.get(TRACE_ID),
+                MDC.get(APP_NAME),
+                "",
+                requestInfo,
                 MDC.get(REQUEST_PARAMS),
                 MDC.get(REQUEST_BODY),
                 //LoggerName表示生成该日志记录器的名字，即打印日志的类的完整类路径

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api")
@@ -42,6 +43,10 @@ public class ApiController {
         ResponseEntity<String> result = restTemplate.getForEntity("http://v2.haokan123.icu",String.class);
         log.info(result.toString());
         return ResponseEntity.ok("http");
+    }
+    @PostMapping("/file")
+    public ResponseEntity<String> file(@RequestParam MultipartFile file){
+        return ResponseEntity.ok("file");
     }
 
 

@@ -1,9 +1,11 @@
 package com.ljw.logalarm.autoconfigure;
 
 import com.ljw.logalarm.core.filter.AlarmFilter;
+import com.ljw.logalarm.core.filter.CacheRequestBodyFilter;
 import com.ljw.logalarm.core.filter.LogParamsFilter;
 import com.ljw.logalarm.core.filter.TraceIdFilter;
 import com.ljw.logalarm.core.service.Sender;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -42,18 +44,29 @@ public class LogAlarmAutoConfiguration implements WebMvcConfigurer {
         registration.setFilter(new TraceIdFilter());
         registration.addUrlPatterns("/*");
         registration.setName("traceIdFilter");
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+       // registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return registration;
     }
 
-    @ConditionalOnProperty(name = "log-alarm.enableTraceId", havingValue = "true")
+    //@ConditionalOnProperty(name = "log-alarm.enableTraceId", havingValue = "true")
     @Bean
-    public FilterRegistrationBean<LogParamsFilter> logParamsFilter() {
-        FilterRegistrationBean<LogParamsFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new LogParamsFilter());
+    public FilterRegistrationBean<CacheRequestBodyFilter> cacheBodyFilter() {
+        FilterRegistrationBean<CacheRequestBodyFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new CacheRequestBodyFilter());
         registration.addUrlPatterns("/*");
-        registration.setName("logParamsFilter");
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        registration.setName("cacheBodyFilter");
+       // registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return registration;
+    }
+    @Bean
+    public FilterRegistrationBean<LogParamsFilter> logParamFilter(@Value("${spring.application.name}") String applicationName) {
+        FilterRegistrationBean<LogParamsFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new LogParamsFilter(applicationName));
+        registration.addUrlPatterns("/*");
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE+1);
+        registration.setName("logParamsFilter");
+        // registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return registration;
     }
 }

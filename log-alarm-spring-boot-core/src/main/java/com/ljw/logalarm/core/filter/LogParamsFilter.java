@@ -1,15 +1,14 @@
 package com.ljw.logalarm.core.filter;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.ljw.logalarm.core.wrapper.RequestWrapper;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -20,17 +19,30 @@ import java.util.Map;
  * @since 2024-09-05 11:50
  */
 @Slf4j
+//@Deprecated
 public class LogParamsFilter extends OncePerRequestFilter {
+    public static final String APP_NAME = "appName";
+    public static final String REQUEST_METHOD = "requestMethod";
+    public static final String REQUEST_URL = "requestUrl";
     public static final String REQUEST_PARAMS = "requestParams";
     public static final String REQUEST_BODY = "requestBody";
+    private final String applicationName;
+
+    public LogParamsFilter(String applicationName) {
+        this.applicationName = applicationName;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        RequestWrapper requestWrapper = new RequestWrapper((HttpServletRequest) request);
-        MDC.put(REQUEST_BODY,requestWrapper.getBody());
-        Map<String, String> paramMap = buildParametersMap(request);
-        MDC.put(REQUEST_PARAMS, JSONObject.from(paramMap).toString());
-        log.info("Request Body: " + requestWrapper.getBody());
-        chain.doFilter(requestWrapper, response);
+        // 提前获得参数，避免 XssFilter 过滤处理
+        Map<String, String> queryString = buildParametersMap(request);
+        String requestBody = CacheRequestBodyFilter.isJsonRequest(request) ? getBody(request) : null;
+        MDC.put(APP_NAME, applicationName);
+        MDC.put(REQUEST_METHOD, request.getMethod());
+        MDC.put(REQUEST_URL, request.getRequestURI());
+        MDC.put(REQUEST_PARAMS, JSONObject.from(queryString).toString());
+        MDC.put(REQUEST_BODY,requestBody);
+        chain.doFilter(request, response);
 
     }
     private Map<String, String> buildParametersMap(HttpServletRequest httpServletRequest) {
@@ -44,6 +56,13 @@ public class LogParamsFilter extends OncePerRequestFilter {
         }
 
         return resultMap;
+    }
+    private String getBody(HttpServletRequest request){
+        try {
+            return new String( request.getInputStream().readAllBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

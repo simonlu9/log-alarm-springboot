@@ -2,10 +2,14 @@ package com.ljw.logalarm.core.service;
 
 import org.slf4j.MDC;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.util.StringUtils;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+
+import static com.ljw.logalarm.core.filter.TraceIdFilter.TRACE_ID;
+import static com.ljw.logalarm.core.filter.TraceIdFilter.genTraceId;
 
 /**
  * @author lujianwen9@gmail.com
@@ -22,6 +26,11 @@ public class TraceIdThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
     public void execute(Runnable runnable) {
         // 获取父线程MDC中的内容，必须在run方法之前，否则等异步线程执行的时候有可能MDC里面的值已经被清空了，这个时候就会返回null
         Map<String, String> context = MDC.getCopyOfContextMap();
+        String traceId = context.get(TRACE_ID);
+        if (StringUtils.isEmpty(traceId)) {
+            traceId = genTraceId();
+        }
+        MDC.put(TRACE_ID, traceId);
         super.execute(() -> {
             // 将父线程的MDC内容传给子线程
             if (context != null) {
@@ -41,6 +50,11 @@ public class TraceIdThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
     public <T> Future<T> submit(Callable<T> task) {
         // 获取父线程MDC中的内容，必须在run方法之前，否则等异步线程执行的时候有可能MDC里面的值已经被清空了，这个时候就会返回null
         Map<String, String> context = MDC.getCopyOfContextMap();
+        String traceId = context.get(TRACE_ID);
+        if (StringUtils.isEmpty(traceId)) {
+            traceId = genTraceId();
+        }
+        MDC.put(TRACE_ID, traceId);
         return super.submit(() -> {
             // 将父线程的MDC内容传给子线程
             if (context != null) {

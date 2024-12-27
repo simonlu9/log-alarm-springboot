@@ -23,7 +23,7 @@ public class TraceIdFilter extends OncePerRequestFilter {
         try {
             String traceId = request.getHeader(TRACE_ID);
             if (StringUtils.isEmpty(traceId)) {
-                traceId = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+                traceId = genTraceId();
             }
             MDC.put(TRACE_ID, traceId);
             filterChain.doFilter(request, response);
@@ -32,5 +32,8 @@ public class TraceIdFilter extends OncePerRequestFilter {
         }finally {
             MDC.clear();
         }
+    }
+    public static String genTraceId(){
+        return UUID.randomUUID().toString().replace("-", "").substring(0, 10);
     }
 }

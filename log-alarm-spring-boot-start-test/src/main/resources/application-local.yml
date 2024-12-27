@@ -6,7 +6,7 @@ log-alarm:
 #  webhook: https://oapi.dingtalk.com/robot/send?access_token=7313b1e9717a4c47056d258e8778a3238b9ddc296c333b529c5ae6cca122c045
   exclude:
     #多个逗号隔开
-    throwable: java.lang.RuntimeException
+    throwable:
     keyword:
 #spring:
 #  kafka:

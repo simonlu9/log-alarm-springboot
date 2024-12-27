@@ -66,7 +66,7 @@ public class LogAlarmAppender extends AppenderBase<LoggingEvent> {
             }
             trackMessage = stackTrace;
         }
-        String template = "链路追踪: %s\n应用名: %s\n用户编号: %s\n请求信息: %s\n请求参数: %s\n请求body: %s\n异常来源: %s\n日志内容: %s\n异常时间: %s\n异常描述: %s\n详细信息:\n%s";
+        String template = "链路追踪: %s\n应用名: %s\n线程名称: %s\n用户编号: %s\n请求信息: %s\n请求参数: %s\n请求body: %s\n异常来源: %s\n日志内容: %s\n异常时间: %s\n异常描述: %s\n详细信息:\n%s";
         LocalDateTime date = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDate = date.format(formatter);
@@ -74,6 +74,7 @@ public class LogAlarmAppender extends AppenderBase<LoggingEvent> {
         return String.format(template,
                 MDC.get(TRACE_ID),
                 MDC.get(APP_NAME),
+                eventObject.getThreadName(),
                 "",
                 requestInfo,
                 MDC.get(REQUEST_PARAMS),

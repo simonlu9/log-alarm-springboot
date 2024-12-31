@@ -1,5 +1,6 @@
 package com.ljw.logalarm.core.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.StringUtils;
@@ -15,6 +16,7 @@ import static com.ljw.logalarm.core.filter.TraceIdFilter.genTraceId;
  * @author lujianwen9@gmail.com
  * @since 2024-08-15 17:13
  */
+@Slf4j
 public class TraceIdThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
     /**
      * 所有线程都会委托给这个execute方法，在这个方法中我们把父线程的MDC内容赋值给子线程
@@ -26,47 +28,44 @@ public class TraceIdThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
     public void execute(Runnable runnable) {
         // 获取父线程MDC中的内容，必须在run方法之前，否则等异步线程执行的时候有可能MDC里面的值已经被清空了，这个时候就会返回null
         Map<String, String> context = MDC.getCopyOfContextMap();
-        String traceId = context.get(TRACE_ID);
-        if (StringUtils.isEmpty(traceId)) {
-            traceId = genTraceId();
+        if(context==null||StringUtils.isEmpty(context.get(TRACE_ID))){
+            String traceId = genTraceId();
+            MDC.put(TRACE_ID, traceId);
+        }else{
+            MDC.setContextMap(context);
         }
-        MDC.put(TRACE_ID, traceId);
         super.execute(() -> {
             // 将父线程的MDC内容传给子线程
-            if (context != null) {
-                MDC.setContextMap(context);
-            }
             try {
                 // 执行异步操作
                 runnable.run();
-            } finally {
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }finally {
                 // 清空MDC内容
                 MDC.clear();
             }
         });
     }
 
+
+
     @Override
-    public <T> Future<T> submit(Callable<T> task) {
-        // 获取父线程MDC中的内容，必须在run方法之前，否则等异步线程执行的时候有可能MDC里面的值已经被清空了，这个时候就会返回null
-        Map<String, String> context = MDC.getCopyOfContextMap();
-        String traceId = context.get(TRACE_ID);
-        if (StringUtils.isEmpty(traceId)) {
-            traceId = genTraceId();
-        }
-        MDC.put(TRACE_ID, traceId);
-        return super.submit(() -> {
-            // 将父线程的MDC内容传给子线程
-            if (context != null) {
-                MDC.setContextMap(context);
+    public Future<?> submit(Runnable task) {
+        Runnable wrappedTask = () -> {
+            // 执行前的逻辑
+            Map<String, String> context = MDC.getCopyOfContextMap();
+            if(context==null||StringUtils.isEmpty(context.get(TRACE_ID))){
+                String traceId = genTraceId();
+                MDC.put(TRACE_ID, traceId);
             }
             try {
-                // 执行异步操作
-                return task.call();
+                task.run();
             } finally {
-                // 清空MDC内容
+                // 执行后的逻辑
                 MDC.clear();
             }
-        });
+        };
+        return super.submit(wrappedTask);
     }
 }

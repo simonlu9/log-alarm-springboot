@@ -58,9 +58,13 @@ public class TraceIdThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
             if(context==null||StringUtils.isEmpty(context.get(TRACE_ID))){
                 String traceId = genTraceId();
                 MDC.put(TRACE_ID, traceId);
+            }else{
+                MDC.setContextMap(context);
             }
             try {
                 task.run();
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
             } finally {
                 // 执行后的逻辑
                 MDC.clear();

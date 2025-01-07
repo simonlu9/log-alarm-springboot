@@ -1,9 +1,6 @@
 package com.ljw.logalarm.autoconfigure;
 
-import com.ljw.logalarm.core.filter.AlarmFilter;
-import com.ljw.logalarm.core.filter.CacheRequestBodyFilter;
-import com.ljw.logalarm.core.filter.LogParamsFilter;
-import com.ljw.logalarm.core.filter.TraceIdFilter;
+import com.ljw.logalarm.core.filter.*;
 import com.ljw.logalarm.core.service.Sender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -44,7 +41,7 @@ public class LogAlarmAutoConfiguration implements WebMvcConfigurer {
         registration.setFilter(new TraceIdFilter());
         registration.addUrlPatterns("/*");
         registration.setName("traceIdFilter");
-       // registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE+1);
         return registration;
     }
 
@@ -64,8 +61,19 @@ public class LogAlarmAutoConfiguration implements WebMvcConfigurer {
         FilterRegistrationBean<LogParamsFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new LogParamsFilter(applicationName));
         registration.addUrlPatterns("/*");
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE+1);
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE+2);
         registration.setName("logParamsFilter");
+        // registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return registration;
+    }
+    @Bean
+    @ConditionalOnProperty(name = "log-alarm.enableExecutionTime", havingValue = "true")
+    public FilterRegistrationBean<ExecutionTimeFilter> executionTimeFilter() {
+        FilterRegistrationBean<ExecutionTimeFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new ExecutionTimeFilter(logAlarmProperties.getTimeout()));
+        registration.addUrlPatterns("/*");
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE+2);
+        registration.setName("executionTimeFilter");
         // registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return registration;
     }

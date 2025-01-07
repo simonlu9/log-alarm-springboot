@@ -28,8 +28,15 @@ public class ApiController {
     }
     @GetMapping("/error")
     public ResponseEntity<String> error() {
-         log.error("error");
+         if(1+2>0){
+             throw new RuntimeException("sdf");
+         }
         return ResponseEntity.ok("error");
+    }
+    @GetMapping("/timeout")
+    public ResponseEntity<String> timeout() throws InterruptedException {
+        Thread.sleep(2000);
+        return ResponseEntity.ok("timeout");
     }
     @PostMapping("/json")
     public ResponseEntity<String> json(@RequestBody FooReq req) {

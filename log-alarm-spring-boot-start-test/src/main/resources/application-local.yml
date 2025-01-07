@@ -1,5 +1,7 @@
 log-alarm:
   enableTraceId: true
+  enableExecutionTime: true
+  timeout: 1000
   mode: workWechat
   webhook: https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=e5e52a58-e9f1-4abc-b7f9-f465caad6fb1
 #  mode: dingding

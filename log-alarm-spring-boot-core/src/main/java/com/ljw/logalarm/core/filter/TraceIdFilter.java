@@ -21,15 +21,15 @@ public class TraceIdFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
+            log.info("[TraceIdFilter] begin");
             String traceId = request.getHeader(TRACE_ID);
             if (StringUtils.isEmpty(traceId)) {
                 traceId = genTraceId();
             }
             MDC.put(TRACE_ID, traceId);
             filterChain.doFilter(request, response);
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
         }finally {
+            log.info("[TraceIdFilter] end");
             MDC.clear();
         }
     }

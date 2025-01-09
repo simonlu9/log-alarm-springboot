@@ -14,6 +14,5 @@ public class LogAlarmProperties {
     private String webhook;
     private String mode;
     private ErrorExcludeProperties exclude;
-    private Long timeout;
 
 }

@@ -3,6 +3,7 @@ package com.ljw.logalarm.autoconfigure;
 import com.ljw.logalarm.core.filter.*;
 import com.ljw.logalarm.core.service.Sender;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -16,7 +17,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @since 2024-08-15 14:53
  */
 @Configuration
-@EnableConfigurationProperties(LogAlarmProperties.class)
+@EnableConfigurationProperties({LogAlarmProperties.class,TimeoutProperties.class})
 public class LogAlarmAutoConfiguration implements WebMvcConfigurer {
     private final LogAlarmProperties logAlarmProperties;
 
@@ -67,10 +68,11 @@ public class LogAlarmAutoConfiguration implements WebMvcConfigurer {
         return registration;
     }
     @Bean
-    @ConditionalOnProperty(name = "log-alarm.enableExecutionTime", havingValue = "true")
-    public FilterRegistrationBean<ExecutionTimeFilter> executionTimeFilter() {
+    //@ConditionalOnBean({TimeoutProperties.class})
+    //@ConditionalOnProperty(name = "log-alarm.timeout")
+    public FilterRegistrationBean<ExecutionTimeFilter> executionTimeFilter( TimeoutProperties timeoutProperties) {
         FilterRegistrationBean<ExecutionTimeFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new ExecutionTimeFilter(logAlarmProperties.getTimeout()));
+        registration.setFilter(new ExecutionTimeFilter(timeoutProperties.getSettings()));
         registration.addUrlPatterns("/*");
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE+2);
         registration.setName("executionTimeFilter");

@@ -23,12 +23,11 @@
     <dependency>
       <groupId>io.github.simonlu9</groupId>
       <artifactId>log-alarm-spring-boot-starter</artifactId>
-      <version>1.0.1-SB3</version>
+      <version>1.1.0-SB3</version>
    </dependency>
   ```
 ## 使用
 
-提供一些示例代码或使用说明，帮助用户了解如何使用你的项目。
 
 ```bash
 # 添加配置
@@ -69,12 +68,16 @@ log-alarm:
 ```
 ## 效果
 ```
-TraceId: eab7f50cec0146aabc14132084e9d784
-请求参数: null
-请求BODY: {"name": "simonlu", "age": 11}
-异常来源: com.ljw.logalarm.test.controller.ApiController
-日志内容: 错误消息
-异常时间: 2024-09-05 16:39:49
+链路追踪: dbeec766e5
+应用名: insight
+线程名称: http-nio-9057-exec-5
+用户编号: 
+请求信息: POST /sys/invite/sale-analysis
+请求参数: {}
+请求body: {"startTime":"2025-01-08 00:00:00","endTime":"2025-01-08 15:33:16","belongInviterUids":[4618029],"type":1}
+异常来源: com.ljw.logalarm.core.filter.ExecutionTimeFilter
+日志内容: Execution Time: 6.011 s
+异常时间: 2025-01-08 15:33:27
 异常描述: 
 详细信息:
 

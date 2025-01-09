@@ -3,7 +3,7 @@
     <appender name="CUSTOM" class="com.ljw.logalarm.core.appender.LogAlarmAppender">
         <filter class="com.ljw.logalarm.core.filter.AlarmFilter"></filter>
     </appender>
-
+<!--    <logger name="com.ljw.logalarm" level="DEBUG" />-->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- 输出格式 -->
         <encoder>

@@ -75,7 +75,7 @@ public class LogAlarmAppender extends AppenderBase<LoggingEvent> {
                 MDC.get(TRACE_ID),
                 MDC.get(APP_NAME),
                 eventObject.getThreadName(),
-                "",
+                MDC.get(USER_ID),
                 requestInfo,
                 MDC.get(REQUEST_PARAMS),
                 MDC.get(REQUEST_BODY),

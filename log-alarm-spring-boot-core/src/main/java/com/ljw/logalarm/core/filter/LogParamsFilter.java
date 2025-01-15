@@ -26,6 +26,7 @@ public class LogParamsFilter extends OncePerRequestFilter {
     public static final String REQUEST_URL = "requestUrl";
     public static final String REQUEST_PARAMS = "requestParams";
     public static final String REQUEST_BODY = "requestBody";
+    public static final String USER_ID = "userId";
     private final String applicationName;
 
     public LogParamsFilter(String applicationName) {

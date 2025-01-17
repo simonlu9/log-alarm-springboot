@@ -35,6 +35,10 @@ log-alarm:
   #当开启时候,会自动在MDC注入traceID属性
   enableTraceId: true
   #mode可选wordWechat|dingding
+  timeout:
+    settings:
+      - urlPattern: "^/.*$" # 匹配以 /test 开头的所有路径
+        threshold: 1000 # 超时时间（毫秒）
   mode: workWechat
   #机器人人配置
   webhook: xxx

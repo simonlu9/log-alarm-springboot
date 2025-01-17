@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/api")
 @Slf4j
@@ -56,5 +58,10 @@ public class ApiController {
         return ResponseEntity.ok("file");
     }
 
+    @PostMapping("/form")
+    public ResponseEntity<String> handleForm(HttpServletRequest request,@ModelAttribute FooReq req) {
 
+        log.error(req.toString());
+        return ResponseEntity.ok("Form data received!");
+    }
 }

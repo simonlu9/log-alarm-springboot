@@ -6,6 +6,7 @@ import com.ljw.logalarm.autoconfigure.LogAlarmAutoConfiguration;
 import com.ljw.logalarm.test.service.AsyncService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author lujianwen@wsyxmall.com
  * @since 2025-01-03 16:32
  */
-@WebMvcTest(ApiController.class)
+@WebMvcTest(value = ApiController.class,excludeAutoConfiguration = {SecurityAutoConfiguration.class})
 //@SpringBootTest(classes = {ApiController.class})
 //@AutoConfigureMockMvc
 @Import(value = {LogAlarmAutoConfiguration.class})
@@ -74,6 +75,30 @@ class ApiControllerTest {
                         .content("{\"name\": \"test\"}") )
                 .andExpect(status().isOk())
                 .andExpect(content().string("Hello, World!"));
+        System.in.read();
+    }
+    @Test
+    void form() throws Exception {
+        mockMvc.perform(post("/api/form")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .characterEncoding(Charset.defaultCharset())
+                        .param("name", "John")
+                        .param("age", "253454")
+                        )
+                .andExpect(status().isOk())
+                .andExpect(content().string("Form data received!"));
+        System.in.read();
+    }
+    @Test
+    void login() throws Exception {
+        mockMvc.perform(post("/login")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .characterEncoding(Charset.defaultCharset())
+                        .param("username", "John")
+                        .param("password", "253454")
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string("Form data received!"));
         System.in.read();
     }
 

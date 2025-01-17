@@ -15,7 +15,7 @@
    <dependency>
       <groupId>io.github.simonlu9</groupId>
       <artifactId>log-alarm-spring-boot-starter</artifactId>
-      <version>1.0.1</version>
+      <version>1.1.1-SB2</version>
    </dependency>
    ```
 - springboot3.x版本
@@ -71,7 +71,7 @@ log-alarm:
 链路追踪: dbeec766e5
 应用名: insight
 线程名称: http-nio-9057-exec-5
-用户编号: 
+用户编号: 123
 请求信息: POST /sys/invite/sale-analysis
 请求参数: {}
 请求body: {"startTime":"2025-01-08 00:00:00","endTime":"2025-01-08 15:33:16","belongInviterUids":[4618029],"type":1}

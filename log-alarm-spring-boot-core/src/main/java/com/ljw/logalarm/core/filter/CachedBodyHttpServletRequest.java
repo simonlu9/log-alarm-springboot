@@ -1,10 +1,9 @@
 package com.ljw.logalarm.core.filter;
 
-import jakarta.servlet.ReadListener;
-import jakarta.servlet.ServletInputStream;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
-
+import javax.servlet.ReadListener;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
 
 public class CachedBodyHttpServletRequest extends HttpServletRequestWrapper {
@@ -14,8 +13,16 @@ public class CachedBodyHttpServletRequest extends HttpServletRequestWrapper {
     public CachedBodyHttpServletRequest(HttpServletRequest request) throws IOException {
         super(request);
         // 缓存请求体
-        InputStream requestInputStream = request.getInputStream();
-        this.cachedBody = requestInputStream.readAllBytes();
+        StringBuilder stringBuilder = new StringBuilder();
+       // InputStream requestInputStream = request.getInputStream();
+        //this.cachedBody = requestInputStream.readAllBytes();
+        try (BufferedReader reader = request.getReader()) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+        }
+        this.cachedBody = stringBuilder.toString().getBytes();
     }
 
     @Override

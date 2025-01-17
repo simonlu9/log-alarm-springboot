@@ -1,11 +1,11 @@
 log-alarm:
   enableTraceId: true
-#  timeout:
-#    settings:
-#      - urlPattern: "^/api.*$" # 匹配以 /test 开头的所有路径
-#        threshold: 1000 # 超时时间（毫秒）
+  timeout:
+    settings:
+      - urlPattern: "^/api.*$" # 匹配以 /test 开头的所有路径
+        threshold: 1000000 # 超时时间（毫秒）
   mode: workWechat
-  webhook: https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=e5e52a58-e9f1-4abc-b7f9-f465caad6fb1
+  webhook: https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=9df804d2-1dcf-4b34-a1d5-a268d0c053ff
 #  mode: dingding
 #  webhook: https://oapi.dingtalk.com/robot/send?access_token=7313b1e9717a4c47056d258e8778a3238b9ddc296c333b529c5ae6cca122c045
   exclude:

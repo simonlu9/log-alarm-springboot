@@ -47,12 +47,16 @@ public class WorkWechatAlarmService implements AlarmService {
     public void doAlarm(String msg) {
         JSONObject jsonObject = JSONObject.parseObject(BODY);
         jsonObject.getJSONObject("text").put("content",msg);
-        String result = restTemplate.postForObject(webhook, jsonObject.toString(), String.class);
-        log.debug("[WorkWechatAlarmService] response info [{}]", result);
-        WorkWechatAlarmResponseDTO wechatAlarmResponseDTO = JSONObject.parseObject(result,WorkWechatAlarmResponseDTO.class);
-        Integer errCode = wechatAlarmResponseDTO.getErrCode();
-        if (errCode != 0 && errCode != 45009) {
-            log.warn("alarm call wechat roobat error [{}]", result);
+        try{
+            String result = restTemplate.postForObject(webhook, jsonObject.toString(), String.class);
+            log.debug("[WorkWechatAlarmService] response info [{}]", result);
+            WorkWechatAlarmResponseDTO wechatAlarmResponseDTO = JSONObject.parseObject(result,WorkWechatAlarmResponseDTO.class);
+            Integer errCode = wechatAlarmResponseDTO.getErrCode();
+            if (errCode != 0 && errCode != 45009) {
+                log.warn("alarm call wechat roobat error [{}]", result);
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
         }
     }
 

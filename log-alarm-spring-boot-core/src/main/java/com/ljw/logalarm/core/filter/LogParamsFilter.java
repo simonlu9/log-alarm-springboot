@@ -1,14 +1,15 @@
 package com.ljw.logalarm.core.filter;
 
 import com.alibaba.fastjson2.JSONObject;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -59,11 +60,16 @@ public class LogParamsFilter extends OncePerRequestFilter {
         return resultMap;
     }
     private String getBody(HttpServletRequest request){
-        try {
-            return new String( request.getInputStream().readAllBytes());
+        StringBuilder stringBuilder = new StringBuilder();
+        try (BufferedReader reader = request.getReader()) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+            return stringBuilder.toString();
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
 }

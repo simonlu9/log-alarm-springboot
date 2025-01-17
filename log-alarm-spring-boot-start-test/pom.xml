@@ -24,5 +24,13 @@
             <groupId>io.github.simonlu9</groupId>
             <artifactId>log-alarm-spring-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
     </dependencies>
 </project>

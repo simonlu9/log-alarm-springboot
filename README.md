@@ -72,16 +72,16 @@ log-alarm:
 ```
 ## 效果
 ```
-链路追踪: dbeec766e5
+链路追踪: fb2aa22424
 应用名: insight
-线程名称: http-nio-9057-exec-5
-用户编号: 123
-请求信息: POST /sys/invite/sale-analysis
-请求参数: {}
-请求body: {"startTime":"2025-01-08 00:00:00","endTime":"2025-01-08 15:33:16","belongInviterUids":[4618029],"type":1}
+线程名称: http-nio-9057-exec-7
+用户编号: 
+请求信息: GET /sys/sync/orders
+请求参数: {"hours":"1"}
+请求body: null
 异常来源: com.ljw.logalarm.core.filter.ExecutionTimeFilter
-日志内容: Execution Time: 6.011 s
-异常时间: 2025-01-08 15:33:27
+日志内容: Request to [/sys/sync/orders] exceeded timeout. Duration: 67457 ms, Threshold: 60000 ms
+异常时间: 2025-01-23 14:01:08
 异常描述: 
 详细信息:
 

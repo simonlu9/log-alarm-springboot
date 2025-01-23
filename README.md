@@ -6,7 +6,7 @@
 - 支持钉钉,企业微信不同方式告警
 - 支持traceId全局日志跟踪,包括web请求,Async任务,消息队列
 - 支持错误异常类或关键字忽略告警
-
+- 支持不同接口超时时间告警
 ## 使用
 
 1. 增加依赖
@@ -15,7 +15,7 @@
    <dependency>
       <groupId>io.github.simonlu9</groupId>
       <artifactId>log-alarm-spring-boot-starter</artifactId>
-      <version>1.0.1</version>
+      <version>1.1.1-SB2</version>
    </dependency>
    ```
 - springboot3.x版本
@@ -23,7 +23,7 @@
     <dependency>
       <groupId>io.github.simonlu9</groupId>
       <artifactId>log-alarm-spring-boot-starter</artifactId>
-      <version>1.1.0-SB3</version>
+      <version>1.1.1-SB3</version>
    </dependency>
   ```
 ## 使用
@@ -35,6 +35,10 @@ log-alarm:
   #当开启时候,会自动在MDC注入traceID属性
   enableTraceId: true
   #mode可选wordWechat|dingding
+  timeout:
+    settings:
+      - urlPattern: "^/.*$" # 匹配以 /test 开头的所有路径
+        threshold: 1000 # 超时时间（毫秒）
   mode: workWechat
   #机器人人配置
   webhook: xxx
@@ -71,7 +75,7 @@ log-alarm:
 链路追踪: dbeec766e5
 应用名: insight
 线程名称: http-nio-9057-exec-5
-用户编号: 
+用户编号: 123
 请求信息: POST /sys/invite/sale-analysis
 请求参数: {}
 请求body: {"startTime":"2025-01-08 00:00:00","endTime":"2025-01-08 15:33:16","belongInviterUids":[4618029],"type":1}
@@ -83,6 +87,26 @@ log-alarm:
 
 ```
 
+## `springboot @Async` 自定义线程池
+```
+   @Bean
+    public Executor customTaskExecutor() {
+        TraceIdThreadPoolTaskExecutor executor =  new TraceIdThreadPoolTaskExecutor();
+        executor.setThreadNamePrefix("trace-id-task-executor-");
+        executor.setCorePoolSize(4);
+        return executor;
+    }
+```
+## `springboot @Schedule` 自定义线程池
+```
+    @Bean
+    public ThreadPoolTaskScheduler taskScheduler() {
+        ThreadPoolTaskScheduler scheduler = new TraceIdThreadPoolScheduleTaskExecutor();
+        scheduler.setPoolSize(5); // 配置线程池大小
+        scheduler.setThreadNamePrefix("Scheduler-");
+        return scheduler;
+    }
+```
 ## 贡献
 
 欢迎任何形式的贡献！请遵循以下步骤：
